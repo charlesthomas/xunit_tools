@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from optparse import OptionParser
+from sys import exit
+
+from xunit_diff import XUnitDiff
+from xunit_parse import XUnitParse
+
+def get_opts():
+    opts = OptionParser(usage='''usage:
+Parse XUnit File(s) and Generate HTML:
+%prog --parse file[,file,file...]
+
+Diff XUnit Files as HTM:
+%prog --diff --html file1 file2
+
+Diff XUnit Files as XML:
+%prog --diff --xml file1 file2
+
+Diff and Parse XUnit Files:
+% prog --diff --html --parse file1 file2
+''')
+    opts.add_option('--parse', action='store_true', default=False)
+    opts.add_option('--diff', action='store_true', default=False)
+    opts.add_option('--html', action='store_true', default=False)
+    opts.add_option('--xml', action='store_true', default=False,
+                    help="Not Impelemented Yet!")
+    opts.add_option('--destination', default=None,
+                    help="Path to write files (Defaults to .)")
+    return opts.parse_args()
+
+def validate(opts, files):
+    assert opts.parse or opts.diff, "You must specify --diff, --parse, or both"
+    if opts.parse:
+        assert len(files) > 0, "You must specify file(s) to parse"
+    if opts.diff:
+        assert opts.html or opts.xml, "You must specify --html, --xml, or both"
+        assert len(files) == 2, "You must specify exactly 2 files to diff"
+    if opts.xml:
+        raise NotImplementedError("XML coming soon?")
+    return opts, files
+
+def main():
+    opts, files = validate(*get_opts())
+    parsers = [XUnitParse(f) for f in files]
+    suites = [p.parse() for p in parsers]
+    if opts.parse:
+        [p.generate_html(opts.destination) for p in parsers]
+    if opts.diff:
+        diff = XUnitDiff(suites[0], suites[1])
+        if opts.html:
+            diff.generate_html(opts.destination)
+        if opts.xml:
+            diff.generate_xml(opts.destination)
+
+if __name__ == '__main__':
+    main()

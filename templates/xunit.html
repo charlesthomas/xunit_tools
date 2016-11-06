@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <title>{{ suite.name }}</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  </head>
+
+  <body class=container-fluid>
+    <div name=top>
+      <h2>{{ suite.name }}</h2>
+      <h3>Total Tests: {{ suite.tests }}</h3>
+      <h3><a href=#passes>Passed Tests: {{ suite.passes }}</a></h3>
+      <h3><a href=#skips>Skipped Tests: {{ suite.skips }}</a></h3>
+      <h3><a href=#errors>Tests w/Errors: {{ suite.errors }}</a></h3>
+      <h3><a href=#failures>Failed Tests: {{ suite.failures }}</a></h3>
+    </div>
+    <hr>
+    <div class=passes><a name=passes></a>
+      <h2>Passes ({{ suite.passes }})</h2>
+      <ul>
+        {% for case in suite.passed_cases %}
+          <li><a name={{ case }}>{{ case }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <hr>
+    <div class=skips><a name=skips></a>
+      <h2>Skips ({{ suite.skips }})</h2>
+      <ul>
+        {% for case in suite.skipped_cases %}
+          <li><a name={{ case }}>{{ case }}</a>
+          {% if suite.cases[case].result.message is not none %}
+            <pre>{{ suite.cases[case].result.message }}</pre>
+          {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <hr>
+    <div class=errors><a name=errors></a>
+      <h2>Errors ({{ suite.errors }})</h2>
+      <ul>
+        {% for case in suite.errored_cases %}
+          <li><a name={{ case }}>{{ case }}</a>
+          {% if suite.cases[case].result.stacktrace is not none %}
+            <pre class=pre-scrollable>
+              {{ suite.cases[case].result.stacktrace }}
+            </pre>
+          {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <hr>
+    <div class=failures><a name=failures></a>
+      <h2>Failures ({{ suite.failures }})</h2>
+      <ul>
+        {% for case in suite.failed_cases %}
+          <li><a name={{ case }}>{{ case }}</a>
+          {% if suite.cases[case].result.stacktrace is not none %}
+            <pre class=pre-scrollable>
+              {{ suite.cases[case].result.stacktrace }}
+            </pre>
+          {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
