@@ -9,16 +9,12 @@ class XUnitParse(object):
     def __init__(self, filepath):
         self.suite = None
         self.root = ElementTree.parse(filepath).getroot()
+        self.filename = os.path.splitext(os.path.basename(filepath))[0]
         if self.root.attrib.get('name', None) is None:
-            name = os.path.splitext(os.path.basename(filepath))[0]
-            self.root.attrib.update(name=name)
-
-    @property
-    def filename(self):
-        return self.suite.filename
+            self.root.attrib.update(name=self.filename)
 
     def generate_html(self, destination=None):
-        path = self.filename
+        path = '{}.html'.format(self.filename)
         if destination is not None:
             path = os.path.join(os.path.expanduser(destination), path)
         if self.suite is None:
@@ -30,7 +26,9 @@ class XUnitParse(object):
             outfile.write(html.render(suite=self.suite).encode('utf8'))
 
     def parse(self):
-        self.suite = TestSuite(**self.root.attrib)
+        kwargs = self.root.attrib
+        kwargs['filename'] = self.filename
+        self.suite = TestSuite(**kwargs)
         for case in self.root:
             testcase = self.suite.add_case(case)
             passed = True

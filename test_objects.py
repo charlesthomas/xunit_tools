@@ -56,12 +56,13 @@ class TestResult(object):
             return self.__repr__()
 
 class TestSuite(object):
-    def __init__(self, errors, failures, tests, name, time=None, skip=None):
+    def __init__(self, errors, failures, tests, name, filename, time=None, skip=None):
         self.errors   = int(errors)
         self.failures = int(failures)
         self.tests    = int(tests)
-        self.time     = float(time or 0)
         self.name     = name
+        self.filename = filename.lower().replace(' ', '_')
+        self.time     = float(time or 0)
         self.skips    = int(skip or 0)
 
         self.passes      = 0
@@ -112,7 +113,3 @@ class TestSuite(object):
     @property
     def failed_cases(self):
         return self.cases_by_result('Failure')
-
-    @property
-    def filename(self):
-        return "{}.html".format(self.name.lower().replace(' ', '_'))

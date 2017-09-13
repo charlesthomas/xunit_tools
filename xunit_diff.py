@@ -35,11 +35,11 @@ class XUnitDiff(object):
 
     @property
     def filename(self):
-        name = "{}_vs_{}.html".format(self.a_suite.name, self.b_suite.name)
+        name = "{}_vs_{}".format(self.a_suite.filename, self.b_suite.filename)
         return name.lower().replace(' ', '_')
 
     def generate_html(self, destination=None):
-        path = self.filename
+        path = '{}.html'.format(self.filename)
         if destination is not None:
             path = os.path.join(os.path.expanduser(destination), path)
         template = os.path.join(os.path.dirname(__file__),
