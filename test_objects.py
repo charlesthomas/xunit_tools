@@ -56,15 +56,19 @@ class TestResult(object):
             return self.__repr__()
 
 class TestSuite(object):
-    def __init__(self, errors, failures, tests, time, name):
+    def __init__(self, errors, failures, tests, name, time=None, skip=None):
         self.errors   = int(errors)
         self.failures = int(failures)
         self.tests    = int(tests)
-        self.time     = float(time)
+        self.time     = float(time or 0)
         self.name     = name
-        self.skips    = 0
-        self.passes   = 0
-        self.cases    = dict()
+        self.skips    = int(skip or 0)
+
+        self.passes      = 0
+        self.cases       = dict()
+        self.count_skips = True
+        if self.skips == 0:
+            self.count_skips = False
 
     def __repr__(self):
         return "TestSuite(errors={}, failures={}, tests={}, time={}, name={})".format(
@@ -89,6 +93,8 @@ class TestSuite(object):
         self.passes += 1
 
     def increment_skip(self):
+        if not self.count_skips:
+            return
         self.skips += 1
 
     @property
