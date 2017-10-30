@@ -1,5 +1,5 @@
 class TestCase(object):
-    def __init__(self, classname, name, time):
+    def __init__(self, classname, name, time, **kwargs):
         self.classname = classname
         self.name      = name
         self.time      = float(time)
@@ -27,7 +27,7 @@ class TestCase(object):
         return self.result.rtype.title()
 
 class TestResult(object):
-    def __init__(self, rtype, message=None, etype=None, stacktrace=None):
+    def __init__(self, rtype, message=None, etype=None, stacktrace=None, **kwargs):
         self.rtype      = rtype
         self.message    = message
         self.etype      = etype
@@ -56,7 +56,7 @@ class TestResult(object):
             return self.__repr__()
 
 class TestSuite(object):
-    def __init__(self, errors, failures, tests, name, filename, time=None, skip=None):
+    def __init__(self, errors, failures, tests, name, filename, time=None, skip=None, **kwargs):
         self.errors   = int(errors)
         self.failures = int(failures)
         self.tests    = int(tests)
