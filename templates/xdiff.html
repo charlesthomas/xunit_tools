@@ -22,48 +22,48 @@
           </tr><tr>
             <th>Passed Tests</th>
             <td>
-              <a href="{{diff.a_suite.filename}}#passes">
+              <a href="{{diff.a_suite.filename}}.html#passes">
                 {{ diff.a_suite.passes }}
               </a>
             </td>
             <td>
-              <a href="{{diff.b_suite.filename}}#passes">
+              <a href="{{diff.b_suite.filename}}.html#passes">
                 {{ diff.b_suite.passes }}
               </a>
             </td>
           </tr><tr>
             <th>Skipped Tests</th>
             <td>
-              <a href="{{diff.a_suite.filename}}#skips">
+              <a href="{{diff.a_suite.filename}}.html#skips">
                 {{ diff.a_suite.skips }}
               </a>
             </td>
             <td>
-              <a href="{{diff.b_suite.filename}}#skips">
+              <a href="{{diff.b_suite.filename}}.html#skips">
                 {{ diff.b_suite.skips }}
               </a>
             </td>
           </tr><tr>
             <th>Tests w/Errors</th>
             <td>
-              <a href="{{diff.a_suite.filename}}#errors">
+              <a href="{{diff.a_suite.filename}}.html#errors">
                 {{ diff.a_suite.errors }}
               </a>
             </td>
             <td>
-              <a href="{{diff.b_suite.filename}}#errors">
+              <a href="{{diff.b_suite.filename}}.html#errors">
                 {{ diff.b_suite.errors }}
               </a>
             </td>
           </tr><tr>
             <th>Failed Tests</th>
             <td>
-              <a href="{{diff.a_suite.filename}}#failures">
+              <a href="{{diff.a_suite.filename}}.html#failures">
                 {{ diff.a_suite.failures }}
               </a>
             </td>
             <td>
-              <a href="{{diff.b_suite.filename}}#failures">
+              <a href="{{diff.b_suite.filename}}.html#failures">
                 {{ diff.b_suite.failures }}
               </a>
             </td>
@@ -117,7 +117,7 @@
                 <b>Stacktrace</b>
               </div>
               <div class=col-md-5>
-                <a href="{{ diff.a_suite.filename }}#{{ case }}">
+                <a href="{{ diff.a_suite.filename }}.html#{{ case }}">
                   {{ diff.a_suite.name }}
                 </a>
                 <br>
@@ -130,7 +130,7 @@
                 {% endif %}
               </div>
               <div class=col-md-5>
-                <a href="{{ diff.b_suite.filename }}#{{ case }}">
+                <a href="{{ diff.b_suite.filename }}.html#{{ case }}">
                   {{ diff.b_suite.name }}
                 </a>
                 <br>
