@@ -1,6 +1,7 @@
 import os.path
 
-from jinja2 import Template
+from jinja2 import FileSystemLoader
+from jinja2.environment import Environment
 
 class XUnitDiff(object):
     def __init__(self, a_suite, b_suite):
@@ -41,9 +42,12 @@ class XUnitDiff(object):
         path = '{}.html'.format(self.filename)
         if destination is not None:
             path = os.path.join(os.path.expanduser(destination), path)
-        template = os.path.join(os.path.dirname(__file__),
-                                'templates', 'xdiff.html')
-        html = Template(open(template).read())
+
+        # so jinja can find macro.html
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+        env = Environment()
+        env.loader = FileSystemLoader(template_dir)
+        html = env.get_template('xdiff.html')
 
         with open(path, 'w') as outfile:
             outfile.write(html.render(diff=self).encode('utf8'))

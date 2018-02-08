@@ -1,0 +1,33 @@
+{% macro print_case(case, link=None, title=False) -%}
+<li>
+  {% if link is none %}
+    <a name={{ case.classname }}.{{ case.name }}>{{ case.classname }}.{{ case.name }}</a>
+  {% else %}
+    <a href="{{ link }}.html#{{ case.classname }}.{{ case.name }}">
+      {% if title %}
+        {{ link }}
+      {% else %}
+        {{ case.classname }}.{{ case.name }}
+      {% endif %}
+    </a>
+    <br>
+    {{ case.result_type }}
+  {% endif %}
+  {% if case.result.stacktrace is not none %}
+    <br>
+    <pre>{{ case.result.stacktrace }}</pre>
+  {% endif %}
+</li>
+{%- endmacro %}
+
+{% macro print_split(a_case, b_case, a_file, b_file) -%}
+<h3>{{ a_case.classname }}.{{ a_case.name }}</h3>
+<div class=row>
+  <div class=col-md-6>
+    {{ print_case(a_case, a_file, True) }}
+  </div>
+  <div class=col-md-6>
+    {{ print_case(b_case, a_file, True) }}
+  </div>
+</div>
+{%- endmacro %}

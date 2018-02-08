@@ -1,3 +1,4 @@
+{% from 'macro.html' import print_case, print_split %}
 <html>
   <head>
     <title>{{ diff.a_suite.name }} vs {{ diff.b_suite.name }}</title>
@@ -16,35 +17,23 @@
             <th>{{ diff.a_suite.name }}</th>
             <th>{{ diff.b_suite.name }}</th>
           </tr><tr>
-            <th>Total Tests</th>
+            <th>Total</th>
             <td>{{ diff.a_suite.tests }}</td>
             <td>{{ diff.b_suite.tests }}</td>
           </tr><tr>
-            <th>Passed Tests</th>
+            <th>Failed</th>
             <td>
-              <a href="{{diff.a_suite.filename}}.html#passes">
-                {{ diff.a_suite.passes }}
+              <a href="{{diff.a_suite.filename}}.html#failures">
+                {{ diff.a_suite.failures }}
               </a>
             </td>
             <td>
-              <a href="{{diff.b_suite.filename}}.html#passes">
-                {{ diff.b_suite.passes }}
-              </a>
-            </td>
-          </tr><tr>
-            <th>Skipped Tests</th>
-            <td>
-              <a href="{{diff.a_suite.filename}}.html#skips">
-                {{ diff.a_suite.skips }}
-              </a>
-            </td>
-            <td>
-              <a href="{{diff.b_suite.filename}}.html#skips">
-                {{ diff.b_suite.skips }}
+              <a href="{{diff.b_suite.filename}}.html#failures">
+                {{ diff.b_suite.failures }}
               </a>
             </td>
           </tr><tr>
-            <th>Tests w/Errors</th>
+            <th>Errored</th>
             <td>
               <a href="{{diff.a_suite.filename}}.html#errors">
                 {{ diff.a_suite.errors }}
@@ -56,95 +45,67 @@
               </a>
             </td>
           </tr><tr>
-            <th>Failed Tests</th>
+            <th>Skipped</th>
             <td>
-              <a href="{{diff.a_suite.filename}}.html#failures">
-                {{ diff.a_suite.failures }}
+              <a href="{{diff.a_suite.filename}}.html#skips">
+                {{ diff.a_suite.skips }}
               </a>
             </td>
             <td>
-              <a href="{{diff.b_suite.filename}}.html#failures">
-                {{ diff.b_suite.failures }}
+              <a href="{{diff.b_suite.filename}}.html#skips">
+                {{ diff.b_suite.skips }}
+              </a>
+            </td>
+          </tr><tr>
+            <th>Passed</th>
+            <td>
+              <a href="{{diff.a_suite.filename}}.html#passes">
+                {{ diff.a_suite.passes }}
+              </a>
+            </td>
+            <td>
+              <a href="{{diff.b_suite.filename}}.html#passes">
+                {{ diff.b_suite.passes }}
               </a>
             </td>
           </tr>
         </table>
       </div><div class=col-md-6></div></div>
       <h3>Total Tests: {{ diff.total_count }}</h3>
-      <h3><a href=#good>Passed/Skipped in Both: {{ diff.good_count }}</a></h3>
       <h3><a href=#a_only>Only ran in {{ diff.a_suite.name }}: {{ diff.a_only_count }}</a></h3>
       <h3><a href=#b_only>Only ran in {{ diff.b_suite.name }}: {{ diff.b_only_count }}</a></h3>
       <h3><a href=#bad>Failed/Errored in Either: {{ diff.bad_count }}</a></h3>
-    </div>
-    <hr>
-    <div name=good><a name=good></a>
-      <h2>Passed/Skipped in Both ({{ diff.good_count }})</h2>
-      <ul>
-        {% for case in diff.good %}
-          <li>{{ case }}</li>
-        {% endfor %}
-      </ul>
+      <h3><a href=#good>Passed/Skipped in Both: {{ diff.good_count }}</a></h3>
     </div>
     <hr>
     <div name=a_only><a name=a_only></a>
-      <h2>Only ran in {{ diff.a_suite.name }} ({{ diff.a_only_count }})</h2>
-      <ul>
-        {% for case in diff.a_only %}
-          <li>{{ case }}</li>
-        {% endfor %}
-      </ul>
+      <h2>Only ran in {{ diff.a_suite.name }}: {{ diff.a_only_count }}</h2>
+      {% for case in diff.a_only %}
+        {{ print_case(diff.a_suite.cases[case], diff.a_suite.filename) }}
+      {% endfor %}
     </div>
     <hr>
     <div name=b_only><a name=b_only></a>
-      <h2>Only ran in {{ diff.b_suite.name }} ({{ diff.b_only_count }})</h2>
-      <ul>
-        {% for case in diff.b_only %}
-          <li>{{ case }}</li>
-        {% endfor %}
-      </ul>
+      <h2>Only ran in {{ diff.b_suite.name }}: {{ diff.b_only_count }}</h2>
+      {% for case in diff.b_only %}
+        {{ print_case(diff.b_suite.cases[case], diff.b_suite.filename) }}
+      {% endfor %}
     </div>
     <hr>
     <div name=bad><a name=bad></a>
-      <h2>Failed/Errored in Either({{ diff.bad_count }})</h2>
+      <h2>Failed or Errored in Either: {{ diff.bad_count }}</h2>
         {% for case in diff.bad %}
-          <div name=case>
-            <h3>{{ case }}</h3>
-            <div class=row>
-              <div class=col-md-1>
-                <br>
-                <b>Result</b>
-                <br>
-                <b>Stacktrace</b>
-              </div>
-              <div class=col-md-5>
-                <a href="{{ diff.a_suite.filename }}.html#{{ case }}">
-                  {{ diff.a_suite.name }}
-                </a>
-                <br>
-                {{ diff.a_suite.cases[case].result_type }}
-                <br>
-                {% if diff.a_suite.cases[case].result.stacktrace is not none %}
-                  <pre class=pre-scrollable>
-                    {{ diff.a_suite.cases[case].result.stacktrace }}
-                  </pre>
-                {% endif %}
-              </div>
-              <div class=col-md-5>
-                <a href="{{ diff.b_suite.filename }}.html#{{ case }}">
-                  {{ diff.b_suite.name }}
-                </a>
-                <br>
-                {{ diff.b_suite.cases[case].result_type }}
-                <br>
-                {% if diff.b_suite.cases[case].result.stacktrace is not none %}
-                  <pre class=pre-scrollable>
-                    {{ diff.b_suite.cases[case].result.stacktrace }}
-                  </pre>
-                {% endif %}
-              </div>
-            </div>
-          </div>
+          {{ print_split(diff.a_suite.cases[case], diff.b_suite.cases[case], diff.a_suite.filename, diff.b_suite.filename) }}
         {% endfor %}
+    </div>
+    <hr>
+    <div name=good><a name=good></a>
+      <h2>Passed or Skipped in Both: {{ diff.good_count }}</h2>
+      <ul>
+        {% for case in diff.good %}
+          {{ print_split(diff.a_suite.cases[case], diff.b_suite.cases[case], diff.a_suite.filename, diff.b_suite.filename) }}
+        {% endfor %}
+      </ul>
     </div>
   </body>
 </html>

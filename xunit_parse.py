@@ -1,7 +1,8 @@
 import os.path
 import xml.etree.ElementTree as ElementTree
 
-from jinja2 import Template
+from jinja2 import FileSystemLoader
+from jinja2.environment import Environment
 
 from test_objects import TestSuite
 
@@ -19,9 +20,13 @@ class XUnitParse(object):
             path = os.path.join(os.path.expanduser(destination), path)
         if self.suite is None:
             self.parse()
-        template = os.path.join(os.path.dirname(__file__),
-                                'templates', 'xunit.html')
-        html = Template(open(template).read())
+
+        # so jinja can find macro.html
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+        env = Environment()
+        env.loader = FileSystemLoader(template_dir)
+        html = env.get_template('xunit.html')
+
         with open(path, 'w') as outfile:
             outfile.write(html.render(suite=self.suite).encode('utf8'))
 
