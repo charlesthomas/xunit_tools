@@ -1,7 +1,9 @@
+from cgi import escape
+
 class TestCase(object):
     def __init__(self, classname, name, time, **kwargs):
-        self.classname = classname
-        self.name      = name
+        self.classname = escape(classname)
+        self.name      = escape(name)
         self.time      = float(time)
         self.result    = None
 

@@ -1,4 +1,5 @@
 import os.path
+from cgi import escape
 import xml.etree.ElementTree as ElementTree
 
 from jinja2 import FileSystemLoader
@@ -46,7 +47,7 @@ class XUnitParse(object):
                 if res.tag == 'error' and 'AssertionError' in res.text:
                     res.tag = 'failure'
                     self.suite.increment_fail()
-                testcase.add_result(rtype=res.tag, stacktrace=res.text,
+                testcase.add_result(rtype=res.tag, stacktrace=escape(res.text),
                                     message=res.attrib.get('message', None),
                                     etype=res.attrib.get('type', None))
             if passed:
