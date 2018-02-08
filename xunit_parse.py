@@ -38,6 +38,9 @@ class XUnitParse(object):
                 passed = False
                 if res.tag == 'skipped':
                     self.suite.increment_skip()
+                if res.tag == 'error' and 'AssertionError' in res.text:
+                    res.tag = 'failure'
+                    self.suite.increment_fail()
                 testcase.add_result(rtype=res.tag, stacktrace=res.text,
                                     message=res.attrib.get('message', None),
                                     etype=res.attrib.get('type', None))

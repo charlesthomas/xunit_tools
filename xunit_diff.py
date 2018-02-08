@@ -35,8 +35,6 @@ class XUnitDiff(object):
             if  self.a_suite.cases[case].result_type in good \
             and self.b_suite.cases[case].result_type in good:
                 ret.add(case)
-        print "ret:\n"
-        print ret
         return ret
 
     def generate_html(self, destination=None):

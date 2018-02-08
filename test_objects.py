@@ -92,6 +92,10 @@ class TestSuite(object):
         return [case for case in self.cases.keys() if \
                 result == self.cases[case].result_type]
 
+    def increment_fail(self):
+        self.failures += 1
+        self.errors   -= 1
+
     def increment_pass(self):
         self.passes += 1
 
