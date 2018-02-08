@@ -71,16 +71,16 @@
         </table>
       </div><div class=col-md-6></div></div>
       <h3>Total Tests: {{ diff.total_count }}</h3>
-      <h3><a href=#matches>Matching Results: {{ diff.match_count }}</a></h3>
+      <h3><a href=#good>Passed/Skipped in Both: {{ diff.good_count }}</a></h3>
       <h3><a href=#a_only>Only ran in {{ diff.a_suite.name }}: {{ diff.a_only_count }}</a></h3>
       <h3><a href=#b_only>Only ran in {{ diff.b_suite.name }}: {{ diff.b_only_count }}</a></h3>
-      <h3><a href=#differences>Differing Results: {{ diff.diff_count }}</a></h3>
+      <h3><a href=#bad>Failed/Errored in Either: {{ diff.bad_count }}</a></h3>
     </div>
     <hr>
-    <div name=matches><a name=matches></a>
-      <h2>Matches ({{ diff.match_count }})</h2>
+    <div name=good><a name=good></a>
+      <h2>Passed/Skipped in Both ({{ diff.good_count }})</h2>
       <ul>
-        {% for case in diff.matches %}
+        {% for case in diff.good %}
           <li>{{ case }}</li>
         {% endfor %}
       </ul>
@@ -104,9 +104,9 @@
       </ul>
     </div>
     <hr>
-    <div name=differences><a name=differences></a>
-      <h2>Differences ({{ diff.diff_count }})</h2>
-        {% for case in diff.differences %}
+    <div name=bad><a name=bad></a>
+      <h2>Failed/Errored in Either({{ diff.bad_count }})</h2>
+        {% for case in diff.bad %}
           <div name=case>
             <h3>{{ case }}</h3>
             <div class=row>

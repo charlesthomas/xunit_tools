@@ -14,29 +14,30 @@ class XUnitDiff(object):
         self.intersection = self.a_cases & self.b_cases
         self.a_only       = self.a_cases - self.b_cases
         self.b_only       = self.b_cases - self.a_cases
-        self.differences  = self.calculate_differences()
-        self.matches      = self.calculate_matches()
+        self.good         = self.passed_in_both()
+        self.bad          = self.intersection - self.good
 
         self.total_count  = len(self.union)
         self.a_only_count = len(self.a_only)
         self.b_only_count = len(self.b_only)
-        self.diff_count   = len(self.differences)
-        self.match_count  = len(self.matches)
-
-    def calculate_differences(self):
-        return [case for case in self.intersection if \
-                self.a_suite.cases[case].result_type != \
-                self.b_suite.cases[case].result_type]
-
-    def calculate_matches(self):
-        return [case for case in self.intersection if \
-                self.a_suite.cases[case].result_type == \
-                self.b_suite.cases[case].result_type]
+        self.good_count   = len(self.good)
+        self.bad_count    = len(self.bad)
 
     @property
     def filename(self):
         name = "{}_vs_{}".format(self.a_suite.filename, self.b_suite.filename)
         return name.lower().replace(' ', '_')
+
+    def passed_in_both(self):
+        ret = set()
+        good = ['Passed', 'Skipped']
+        for case in self.intersection:
+            if  self.a_suite.cases[case].result_type in good \
+            and self.b_suite.cases[case].result_type in good:
+                ret.add(case)
+        print "ret:\n"
+        print ret
+        return ret
 
     def generate_html(self, destination=None):
         path = '{}.html'.format(self.filename)
