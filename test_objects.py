@@ -63,12 +63,14 @@ class TestSuite(object):
         self.name     = name
         self.filename = filename.lower().replace(' ', '_')
         self.time     = float(time or 0)
-        self.skips    = int(skip or 0)
+        self.passes   = 0
+        self.cases    = dict()
 
-        self.passes      = 0
-        self.cases       = dict()
-        self.count_skips = True
-        if self.skips == 0:
+        if skip is None:
+            self.count_skips = True
+            self.skips = 0
+        else:
+            self.skips       = int(skip)
             self.count_skips = False
 
     def __repr__(self):
