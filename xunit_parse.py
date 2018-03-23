@@ -8,10 +8,11 @@ from jinja2.environment import Environment
 from test_objects import TestSuite
 
 class XUnitParse(object):
-    def __init__(self, filepath):
+    def __init__(self, filepath, matchers=None):
         self.suite = None
         self.root = ElementTree.parse(filepath).getroot()
         self.filename = os.path.splitext(os.path.basename(filepath))[0]
+        self.matchers = matchers
         if self.root.attrib.get('name', None) is None:
             self.root.attrib.update(name=self.filename)
 
@@ -34,6 +35,7 @@ class XUnitParse(object):
     def parse(self):
         kwargs = self.root.attrib
         kwargs['filename'] = self.filename
+        kwargs['matchers'] = self.matchers
         self.suite = TestSuite(**kwargs)
         for case in self.root:
             testcase = self.suite.add_case(case)

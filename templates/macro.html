@@ -1,7 +1,11 @@
+{% macro case_href(case) -%}
+{{ case.classname }}.{{ case.name }}
+{%- endmacro %}
+
 {% macro print_case(case, link=None, title=False) -%}
 <li>
   {% if link is none %}
-    <a name={{ case.classname }}.{{ case.name }}>{{ case.classname }}.{{ case.name }}</a>
+    <a name={{ case_href(case) }}>{{ case.classname }}.{{ case.name }}</a>
   {% else %}
     <a href="{{ link }}.html#{{ case.classname }}.{{ case.name }}">
       {% if title %}
@@ -12,6 +16,9 @@
     </a>
     <br>
     {{ case.result_type }}
+  {% endif %}
+  {% if case.groups %}
+    <span class="other_groups" style="font-size: 80%">({{ case.groups|join(', ') }})</span>
   {% endif %}
   {% if case.result.stacktrace is not none %}
     <br>

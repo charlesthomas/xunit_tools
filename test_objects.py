@@ -1,4 +1,33 @@
+from collections import defaultdict
 from cgi import escape
+from re import search
+
+class TestResultMatcher(object):
+    def __init__(self, name, rtype=None, message_pattern=None, etype_pattern=None):
+        self.name = name
+        self.rtype = rtype
+        self.message_pattern = message_pattern
+        self.etype_pattern = etype_pattern
+
+    def is_match(self, result):
+        return self.matches_rtype(result) and \
+               self.matches_etype(result) and \
+               self.matches_message(result)
+
+    def _blank_or_matches(self, haystack, needle):
+        if not needle:
+            return True
+
+        return search(needle, haystack)
+
+    def matches_rtype(self, result):
+        return self.rtype is None or result.rtype == self.rtype
+
+    def matches_etype(self, result):
+        return self._blank_or_matches(result.etype, self.etype_pattern)
+
+    def matches_message(self, result):
+        return self._blank_or_matches(result.message, self.message_pattern)
 
 class TestCase(object):
     def __init__(self, classname, name, time, **kwargs):
@@ -6,6 +35,12 @@ class TestCase(object):
         self.name      = escape(name)
         self.time      = float(time)
         self.result    = None
+        self.suite     = None
+        self.groups    = list()
+
+    def classify(self):
+        if self.suite and self.result and not self.groups:
+            self.groups = self.suite.classify(self.result)
 
     def __eq__(self, other):
         return self.result == other.result
@@ -23,6 +58,7 @@ class TestCase(object):
     def add_result(self, rtype, stacktrace=None, message=None, etype=None):
         self.result = TestResult(rtype=rtype, message=message, etype=etype,
                                  stacktrace=stacktrace)
+        self.classify()
 
     @property
     def result_type(self):
@@ -67,6 +103,8 @@ class TestSuite(object):
         self.time     = float(time or 0)
         self.passes   = 0
         self.cases    = dict()
+        self.matchers = kwargs.get('matchers', list())
+        self.group_counts = defaultdict(int)
 
         if skip is None:
             self.count_skips = True
@@ -86,6 +124,7 @@ class TestSuite(object):
 
     def add_case(self, case):
         testcase = TestCase(**case.attrib)
+        testcase.suite = self
         key = "{}.{}".format(testcase.classname, testcase.name)
         self.cases[key] = testcase
         return testcase
@@ -93,6 +132,23 @@ class TestSuite(object):
     def cases_by_result(self, result):
         return [case for case in self.cases.keys() if \
                 result == self.cases[case].result_type]
+
+    def cases_by_groups(self):
+        ret = defaultdict(list)
+        for case in self.cases.values():
+            for group in case.groups:
+                ret[group].append(case)
+        
+        return ret
+
+    def classify(self, result):
+        matches = list()
+        for matcher in self.matchers:
+            if matcher.is_match(result):
+                self.group_counts[matcher.name] += 1
+                matches.append(matcher.name)
+
+        return matches
 
     def increment_fail(self):
         self.failures += 1

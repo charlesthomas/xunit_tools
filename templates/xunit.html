@@ -1,4 +1,4 @@
-{% from 'macro.html' import print_case%}
+{% from 'macro.html' import print_case, case_href %}
 <html>
   <head>
     <title>{{ suite.name }}</title>
@@ -17,6 +17,14 @@
       <h3><a href=#errored>Errored: {{ suite.errors }}</a></h3>
       <h3><a href=#skipped>Skipped: {{ suite.skips }}</a></h3>
       <h3><a href=#passed>Passed: {{ suite.passes }}</a></h3>
+      {% if suite.group_counts %}
+        <h3><a href=#groups>Custom Groups</a></h3>
+        <ul>
+        {% for group_name in suite.group_counts %}
+          <li>{{ group_name }}: {{ suite.group_counts[group_name] }}</li>
+        {% endfor %}
+        <ul>
+      {% endif %}
     </div>
     <hr>
     <div class=failed><a name=failed></a>
@@ -54,5 +62,20 @@
         {% endfor %}
       </ul>
     </div>
+    {% if suite.group_counts %}
+      <div class=groups><a name=groups></a>
+        <h2>Groups</h2>
+        {% for group, cases in suite.cases_by_groups().iteritems() %}
+          <div class=group>
+            <h3>{{ group }}</h3>
+            <ul>
+              {% for case in cases %}
+                <li><a href="#{{ case_href(case) }}">{{ case_href(case) }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
   </body>
 </html>

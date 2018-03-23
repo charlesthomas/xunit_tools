@@ -3,8 +3,10 @@
 from optparse import OptionParser
 from sys import exit
 
+from test_objects import TestResultMatcher
 from xunit_diff import XUnitDiff
 from xunit_parse import XUnitParse
+
 
 def get_opts():
     opts = OptionParser(usage='''usage:
@@ -25,6 +27,7 @@ Diff and Parse XUnit Files:
     opts.add_option('--html', action='store_true', default=False)
     opts.add_option('--xml', action='store_true', default=False,
                     help="Not Impelemented Yet!")
+    opts.add_option('--group', default=None, help="A custom group for cases")
     opts.add_option('--destination', default=None,
                     help="Path to write files (Defaults to .)")
     return opts.parse_args()
@@ -42,7 +45,8 @@ def validate(opts, files):
 
 def main():
     opts, files = validate(*get_opts())
-    parsers = [XUnitParse(f) for f in files]
+    matchers = [] if not opts.group else [TestResultMatcher(*opts.group.split(','))]
+    parsers = [XUnitParse(f, matchers=matchers) for f in files]
     suites = [p.parse() for p in parsers]
     if opts.parse:
         [p.generate_html(opts.destination) for p in parsers]
