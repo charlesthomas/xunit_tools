@@ -21,7 +21,7 @@
         <h3><a href=#groups>Custom Groups</a></h3>
         <ul>
         {% for group_name in suite.group_counts %}
-          <li>{{ group_name }}: {{ suite.group_counts[group_name] }}</li>
+          <li><a href="#group_{{ group_name }}">{{ group_name }}: {{ suite.group_counts[group_name] }}</a></li>
         {% endfor %}
         <ul>
       {% endif %}
@@ -67,7 +67,7 @@
         <h2>Groups</h2>
         {% for group, cases in suite.cases_by_groups().iteritems() %}
           <div class=group>
-            <h3>{{ group }}</h3>
+            <h3><a name="group_{{ group }}">{{ group }}</a></h3>
             <ul>
               {% for case in cases %}
                 <li><a href="#{{ case_href(case) }}">{{ case_href(case) }}</a></li>
