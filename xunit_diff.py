@@ -18,6 +18,9 @@ class XUnitDiff(object):
         self.good         = self.passed_in_both()
         self.bad          = self.intersection - self.good
 
+        self.common_groups = set(self.a_suite.group_counts.keys()) | \
+                             set(self.b_suite.group_counts.keys())
+
         self.total_count  = len(self.union)
         self.a_only_count = len(self.a_only)
         self.b_only_count = len(self.b_only)

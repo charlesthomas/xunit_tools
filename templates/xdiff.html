@@ -69,6 +69,21 @@
               </a>
             </td>
           </tr>
+          {% for group in diff.common_groups %}
+            <tr>
+              <th>{{ group }}</th>
+              <td>
+                <a href="{{diff.a_suite.filename}}.html#group_{{ group }}">
+                  {{ diff.a_suite.group_counts[group] }}
+                </a>
+              </td>
+              <td>
+                <a href="{{diff.b_suite.filename}}.html#group_{{ group }}">
+                  {{ diff.b_suite.group_counts[group] }}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
         </table>
       </div><div class=col-md-6></div></div>
       <h3>Total Tests: {{ diff.total_count }}</h3>
