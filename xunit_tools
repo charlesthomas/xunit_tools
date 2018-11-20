@@ -6,10 +6,11 @@ from optparse import OptionParser
 from sys import exit, stderr
 from textwrap import dedent
 
+from render_objects import BaseObject
 from xunit_diff import XUnitDiff
 from xunit_parse import XUnitParse
 
-class XUnitTools(object):
+class XUnitTools(BaseObject):
     def __init__(self):
         self.flags = None
         self.files = None
@@ -28,14 +29,6 @@ class XUnitTools(object):
         print(message, file=stderr)
         self.opts.print_help()
         exit(code)
-
-    @property
-    def version(self):
-        try:
-            with open('VERSION') as fin:
-                return fin.readline().strip()
-        except:
-            return 'UNKNOWN'
 
     def get_opts(self):
         self.opts = OptionParser(usage=self.usage, version=self.version,
