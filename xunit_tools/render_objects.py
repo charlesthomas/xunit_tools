@@ -7,7 +7,7 @@ class BaseObject(object):
     @property
     def version(self):
         try:
-            with open('VERSION') as fin:
+            with open(os.path.join(os.path.dirname(__file__), 'VERSION')) as fin:
                 return fin.readline().strip()
         except:
             return 'UNKNOWN'

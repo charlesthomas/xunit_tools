@@ -46,7 +46,7 @@ class XUnitTools(BaseObject):
         if self.flags.diff and num != 2:
             self.err('you must specify exactly two files to diff', 4)
 
-    def main(self):
+    def run(self):
         self.get_opts()
         parsers = [XUnitParse(f) for f in self.files]
         suites = [p.parse() for p in parsers]
@@ -56,5 +56,8 @@ class XUnitTools(BaseObject):
             diff = XUnitDiff(suites[0], suites[1])
             diff.generate_html(self.flags.destination)
 
+def main():
+    XUnitTools().run()
+
 if __name__ == '__main__':
-    XUnitTools().main()
+    main()
