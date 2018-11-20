@@ -9,11 +9,15 @@ class XUnitParse(HTMLObject):
     template = 'xunit'
 
     def __init__(self, filepath):
+        self.filepath = filepath
         self.suite = None
         self.root = ElementTree.parse(filepath).getroot()
-        self.filename = os.path.splitext(os.path.basename(filepath))[0]
         if self.root.attrib.get('name', None) is None:
             self.root.attrib.update(name=self.filename)
+
+    @property
+    def filename(self):
+        return os.path.splitext(os.path.basename(self.filepath))[0]
 
     def parse(self):
         kwargs = self.root.attrib
@@ -37,10 +41,9 @@ class XUnitParse(HTMLObject):
             if passed:
                 testcase.add_result(rtype='passed')
                 self.suite.increment_pass()
+        self.render_kwargs = {'suite': self.suite}
         return self.suite
 
     @property
-    def render_kwargs(self):
-        if self.suite is None:
-            self.parse()
-        return {'suite': self.suite}
+    def title(self):
+        return self.root.attrib['name']

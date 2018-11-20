@@ -4,6 +4,8 @@ class XUnitDiff(HTMLObject):
     template = 'xdiff'
 
     def __init__(self, a_suite, b_suite):
+        self.render_kwargs = {'diff': self}
+
         self.a_suite = a_suite
         self.a_cases = set(self.a_suite.cases.keys())
 
@@ -25,8 +27,7 @@ class XUnitDiff(HTMLObject):
 
     @property
     def filename(self):
-        name = "{}_vs_{}".format(self.a_suite.filename, self.b_suite.filename)
-        return name.lower().replace(' ', '_')
+        return self.title.lower().replace(' ', '_')
 
     def passed_in_both(self):
         ret = set()
@@ -38,5 +39,5 @@ class XUnitDiff(HTMLObject):
         return ret
 
     @property
-    def render_kwargs(self):
-        return {'diff': self}
+    def title(self):
+        return "{} vs {}".format(self.a_suite.filename, self.b_suite.filename)
