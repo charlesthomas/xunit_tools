@@ -1,4 +1,5 @@
 from render_objects import HTMLObject
+from test_objects import DidNotRun
 
 class XUnitDiff(HTMLObject):
     template = 'xdiff'
@@ -13,15 +14,10 @@ class XUnitDiff(HTMLObject):
         self.b_cases = set(self.b_suite.cases.keys())
 
         self.union        = self.a_cases | self.b_cases
-        self.intersection = self.a_cases & self.b_cases
-        self.a_only       = self.a_cases - self.b_cases
-        self.b_only       = self.b_cases - self.a_cases
         self.good         = self.passed_in_both()
-        self.bad          = self.intersection - self.good
+        self.bad          = self.union - self.good
 
         self.total_count  = len(self.union)
-        self.a_only_count = len(self.a_only)
-        self.b_only_count = len(self.b_only)
         self.good_count   = len(self.good)
         self.bad_count    = len(self.bad)
 
@@ -31,8 +27,16 @@ class XUnitDiff(HTMLObject):
 
     def passed_in_both(self):
         ret = set()
-        good = ['Passed', 'Skipped']
-        for case in self.intersection:
+        good = ['Passed', 'Skipped', 'Did Not Run']
+        for case in self.union:
+            a_case = self.a_suite.cases.get(case, None)
+            b_case = self.b_suite.cases.get(case, None)
+
+            if a_case is None:
+                self.a_suite.cases[case] = DidNotRun(b_case)
+            if b_case is None:
+                self.b_suite.cases[case] = DidNotRun(a_case)
+
             if  self.a_suite.cases[case].result_type in good \
             and self.b_suite.cases[case].result_type in good:
                 ret.add(case)

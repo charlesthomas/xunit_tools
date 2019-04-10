@@ -1,33 +1,72 @@
-{% macro print_case(case, link=None, title=False) -%}
-<li>
-  {% if link is none %}
-    <a name={{ case.classname }}.{{ case.name }}>{{ case.classname }}.{{ case.name }}</a>
-  {% else %}
-    <a href="{{ link }}.html#{{ case.classname }}.{{ case.name }}">
-      {% if title %}
-        {{ link }}
-      {% else %}
-        {{ case.classname }}.{{ case.name }}
-      {% endif %}
-    </a>
-    <br>
-    {{ case.result_type }}
-  {% endif %}
-  {% if case.result.stacktrace is not none %}
-    <br>
-    <pre>{{ case.result.stacktrace }}</pre>
-  {% endif %}
-</li>
+{% macro print_case(a_case, a_file=None, b_case=None, b_file=None) -%}
+  <div>
+    {{ case_header(a_case) }}
+      <div class=row>
+        {% if b_case is none %}
+          <div class=col-md-12>
+            {{ print_single(a_case) }}
+          </div>
+        {% else %}
+          {{ print_split(a_case, a_file, b_case, b_file) }}
+        {% endif %}
+      </div>
+    {{ case_footer(a_case) }}
+  </div>
 {%- endmacro %}
 
-{% macro print_split(a_case, b_case, a_file, b_file) -%}
-<h3>{{ a_case.classname }}.{{ a_case.name }}</h3>
-<div class=row>
+{% macro case_header(case) -%}
+  <a href="#{{case.classname|e }}.{{ case.name|e }}_top"><span class="glyphicon glyphicon-link"></span></a>
+  <a href="#{{case.classname|e }}.{{ case.name|e }}_bottom"><span class="glyphicon glyphicon-arrow-down"></span></a>
+  <a name="{{ case.classname|e }}.{{ case.name|e }}_top"></a>
+  <span class=h3 id="{{ case.classname }}.{{ case.name }}">
+    {{ case.classname }}.{{ case.name }}
+  </span>
+  <br><br>
+{%- endmacro %}
+
+{% macro case_footer(case) -%}
+  <a name="{{ case.classname|e }}.{{ case.name|e }}_bottom"></a>
+{%- endmacro %}
+
+{% macro print_single(case, link=None) -%}
+  {{ result(case.result_type) }}
+  {% if link is not none and case.result_type != 'Did Not Run' %}
+    <span class=label>
+      <a href="{{ link }}.html#{{ case.classname|e }}.{{ case.name|e }}_top">
+        <span class="glyphicon glyphicon-link"></span></a>
+    </span>
+  {% endif %}
+  <br><br>
+  {% if case.result.stacktrace is not none %}
+    <pre><code class=text-wrap>{{ case.result.stacktrace }}</code></pre>
+  {% endif %}
+{%- endmacro %}
+
+{% macro print_split(a_case, a_file, b_case, b_file) -%}
   <div class=col-md-6>
-    {{ print_case(a_case, a_file, True) }}
+    {{ print_single(a_case, a_file) }}
   </div>
   <div class=col-md-6>
-    {{ print_case(b_case, b_file, True) }}
+    {{ print_single(b_case, b_file) }}
   </div>
-</div>
+{%- endmacro %}
+
+{% macro result(result_type) -%}
+  {% if result_type == "Error" %}
+    {% set glyph_class = "glyphicon-exclamation-sign" %}
+    {% set label_class = "label-warning" %}
+  {% elif result_type == "Failure" %}
+    {% set glyph_class = "glyphicon-remove-sign" %}
+    {% set label_class = "label-danger" %}
+  {% elif result_type == "Passed" %}
+    {% set glyph_class = "glyphicon-ok-sign" %}
+    {% set label_class = "label-success" %}
+  {% else %}
+    {% set glyph_class = "glyphicon-ok-sign" %}
+    {% set label_class = "label-info" %}
+  {% endif %}
+      <span class="label {{ label_class }}">
+        <span class="glyphicon {{ glyph_class }}"></span>
+        {{ result_type }}
+      </span>
 {%- endmacro %}

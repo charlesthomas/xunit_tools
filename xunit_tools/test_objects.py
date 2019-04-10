@@ -28,6 +28,15 @@ class TestCase(object):
     def result_type(self):
         return self.result.rtype.title()
 
+
+class DidNotRun(TestCase):
+    def __init__(self, test_case):
+        self.classname   = test_case.classname
+        self.name        = test_case.name
+        self.time        = float(0)
+        self.result      = TestResult("Did Not Run")
+
+
 class TestResult(object):
     def __init__(self, rtype, message=None, etype=None, stacktrace=None, **kwargs):
         self.rtype      = rtype
@@ -56,6 +65,7 @@ class TestResult(object):
             return "FAILURE {}\n{}".format(self.message, self.stacktrace)
         else:
             return self.__repr__()
+
 
 class TestSuite(object):
     def __init__(self, errors, failures, tests, name, filename, time=None, skip=None, **kwargs):

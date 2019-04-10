@@ -2,6 +2,7 @@
 {% extends 'layout.html' %}
 {% block body %}
     <div name=top>
+      <a name=top></a>
       <h2>{{ suite.name }}</h2>
       <h3>Total: {{ suite.tests }}</h3>
       <h3><a href=#failed>Failed: {{ suite.failures }}</a></h3>
@@ -11,38 +12,34 @@
     </div>
     <hr>
     <div class=failed><a name=failed></a>
-      <h2>Failed: {{ suite.failures }}</h2>
-      <ul>
+      <span class="h2">Failed: {{ suite.failures }}</span>
+      <a href="#top"><span class="glyphicon glyphicon-arrow-up"></span></a>
         {% for case in suite.failed_cases %}
           {{ print_case(suite.cases[case]) }}
         {% endfor %}
-      </ul>
     </div>
     <hr>
     <div class=errored><a name=errored></a>
-      <h2>Errored: {{ suite.errors }}</h2>
-      <ul>
+      <span class="h2">Errored: {{ suite.errors }}</span>
+      <a href="#top"><span class="glyphicon glyphicon-arrow-up"></span></a>
         {% for case in suite.errored_cases %}
           {{ print_case(suite.cases[case]) }}
         {% endfor %}
-      </ul>
     </div>
     <hr>
     <div class=skipped><a name=skipped></a>
-      <h2>Skipped: {{ suite.skips }}</h2>
-      <ul>
+      <span class="h2">Skipped: {{ suite.skips }}</span>
+      <a href="#top"><span class="glyphicon glyphicon-arrow-up"></span></a>
         {% for case in suite.skipped_cases %}
           {{ print_case(suite.cases[case]) }}
         {% endfor %}
-      </ul>
     </div>
     <hr>
     <div class=passed><a name=passed></a>
-      <h2>Passed: {{ suite.passes }}</h2>
-      <ul>
+      <span class="h2">Passed: {{ suite.passes }}</span>
+      <a href="#top"><span class="glyphicon glyphicon-arrow-up"></span></a>
         {% for case in suite.passed_cases %}
           {{ print_case(suite.cases[case]) }}
         {% endfor %}
-      </ul>
     </div>
 {% endblock %}
